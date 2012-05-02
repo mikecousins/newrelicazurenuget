@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>NewRelicWindowsAzure</id>
+    <version>1.0.0.3</version>
+    <title>New Relic x64 for Windows Azure</title>
+    <authors>Mike Cousins</authors>
+    <owners />
+    <licenseUrl>http://newrelic.com</licenseUrl>
+    <projectUrl>http://blog.mikecousins.com/2011/08/31/new-relic-windows-azure-package-for-nuget/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Installing New Relic on Windows Azure is a bit of a pain so I’ve created a NuGet package for it to make it dead easy. I’ll keep it updated with the latest NewRelic releases.
+
+Make sure you go to New Relic first to sign up and get your key. Performance monitoring will never be the same after you do!
+
+http://newrelic.com
+
+The package will be available through your NuGet package manager. You can view it on the web as well:
+
+http://nuget.org/List/Packages/NewRelicWindowsAzure 
+
+Once you install the NuGet package you will need to follow these instructions to finish your setup before depolyment:
+
+https://support.newrelic.com/help/kb/dotnet/installing-the-net-agent-on-azure</description>
+    <summary>Includes the latest New Relic x64 installer, so that you can easily include New Relic in your Azure deployment.</summary>
+  </metadata>
+</package>
