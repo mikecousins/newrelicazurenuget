@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>NewRelicWindowsAzure</id>
     <version>1.0.0.3</version>
-    <title>New Relic x64 for Windows Azure</title>
     <authors>Mike Cousins</authors>
     <owners />
     <licenseUrl>http://newrelic.com</licenseUrl>
     <projectUrl>http://blog.mikecousins.com/2011/08/31/new-relic-windows-azure-package-for-nuget/</projectUrl>
+    <id>NewRelicWindowsAzure</id>
+    <title>New Relic x64 for Windows Azure</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Installing New Relic on Windows Azure is a bit of a pain so I’ve created a NuGet package for it to make it dead easy. I’ll keep it updated with the latest NewRelic releases.
 
@@ -24,4 +24,22 @@ Once you install the NuGet package you will need to follow these instructions to
 https://support.newrelic.com/help/kb/dotnet/installing-the-net-agent-on-azure</description>
     <summary>Includes the latest New Relic x64 installer, so that you can easily include New Relic in your Azure deployment.</summary>
   </metadata>
+  <files>
+    <file src="..\newrelicazurenuget\.git\hooks\applypatch-msg.sample" target=".git\hooks\applypatch-msg.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\commit-msg.sample" target=".git\hooks\commit-msg.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\post-commit.sample" target=".git\hooks\post-commit.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\post-receive.sample" target=".git\hooks\post-receive.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\post-update.sample" target=".git\hooks\post-update.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\pre-applypatch.sample" target=".git\hooks\pre-applypatch.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\pre-commit.sample" target=".git\hooks\pre-commit.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\pre-rebase.sample" target=".git\hooks\pre-rebase.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\prepare-commit-msg.sample" target=".git\hooks\prepare-commit-msg.sample" />
+    <file src="..\newrelicazurenuget\.git\hooks\update.sample" target=".git\hooks\update.sample" />
+    <file src="..\newrelicazurenuget\.git\objects\pack\pack-9471bf40d0f01b228166f543f45be07a0eac9116.idx" target=".git\objects\pack\pack-9471bf40d0f01b228166f543f45be07a0eac9116.idx" />
+    <file src="..\newrelicazurenuget\.git\objects\pack\pack-9471bf40d0f01b228166f543f45be07a0eac9116.pack" target=".git\objects\pack\pack-9471bf40d0f01b228166f543f45be07a0eac9116.pack" />
+    <file src="..\newrelicazurenuget\content\NewRelicAgent_x64_2.0.8.4.msi" target="content\NewRelicAgent_x64_2.0.8.4.msi" />
+    <file src="..\..\..\Users\Nick Floyd\AppData\Local\Temp\d631ea36-c8d3-4155-9e93-cbb83b24600b\install.ps1" target="tools\install.ps1" />
+    <file src="..\newrelicazurenuget\.gitignore" target=".gitignore" />
+    <file src="..\newrelicazurenuget\README.md" target="README.md" />
+  </files>
 </package>
