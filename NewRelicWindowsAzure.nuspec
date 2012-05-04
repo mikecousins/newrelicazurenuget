@@ -25,7 +25,7 @@ https://support.newrelic.com/help/kb/dotnet/installing-the-net-agent-on-azure</d
     <summary>Includes the latest New Relic x64 installer, so that you can easily include New Relic in your Azure deployment.</summary>
   </metadata>
   <files>
-    <file src="newrelicazurenuget\content\NewRelicAgent_x64_2.0.8.4.msi" target="content\NewRelicAgent_x64_2.0.8.4.msi" />
-    <file src="newrelicazurenuget\tools\install.ps1" target="tools\install.ps1" />
+    <file src="content\NewRelicAgent_x64_2.0.8.4.msi" target="content\NewRelicAgent_x64_2.0.8.4.msi" />
+    <file src="tools\install.ps1" target="tools\install.ps1" />
   </files>
 </package>
