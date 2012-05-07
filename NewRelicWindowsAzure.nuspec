@@ -26,6 +26,7 @@ https://support.newrelic.com/help/kb/dotnet/installing-the-net-agent-on-azure</d
   </metadata>
   <files>
     <file src="content\NewRelicAgent_x64_2.0.8.4.msi" target="content\NewRelicAgent_x64_2.0.8.4.msi" />
+    <file src="content\startup.cmd" target="content\startup.cmd" />
     <file src="tools\install.ps1" target="tools\install.ps1" />
   </files>
 </package>
