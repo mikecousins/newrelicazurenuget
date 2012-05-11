@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <version>1.0.0.3</version>
+    <version>1.0.0.9</version>
     <authors>Mike Cousins</authors>
     <owners />
     <licenseUrl>http://newrelic.com</licenseUrl>
@@ -11,21 +11,26 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Installing New Relic on Windows Azure is a bit of a pain so I’ve created a NuGet package for it to make it dead easy. I’ll keep it updated with the latest NewRelic releases.
 
-Make sure you go to New Relic first to sign up and get your key. Performance monitoring will never be the same after you do!
+Make sure you go to New Relic first to sign up and get your key at http://newrelic.com. Performance monitoring will never be the same after you do!
 
-http://newrelic.com
+The package is available through your NuGet package manager and on the web at http://nuget.org/packages/NewRelicWindowsAzure
 
-The package will be available through your NuGet package manager. You can view it on the web as well:
+Set up:
+1. install-package NewRelicWindowsAzure
+2. Open the newrelic.cmd file in your projects root and replace the text "REPLACE_WITH_LICENSE_KEY" with your license key.
+3. Modify the web.config key "NewRelic.AppName" to use whatever custom name you want and deploy your application.
 
-http://nuget.org/List/Packages/NewRelicWindowsAzure 
+Visit http://rpm.newrelic.com after your package deploy is complete to see your performance metrics.
 
-Once you install the NuGet package you will need to follow these instructions to finish your setup before depolyment:
-
-https://support.newrelic.com/help/kb/dotnet/installing-the-net-agent-on-azure</description>
+For more information on what this package is doing go to: https://support.newrelic.com/help/kb/dotnet/installing-the-net-agent-on-azure
+</description>
     <summary>Includes the latest New Relic x64 installer, so that you can easily include New Relic in your Azure deployment.</summary>
   </metadata>
   <files>
+    <file src="content\newrelic.cmd" target="content\newrelic.cmd" />
     <file src="content\NewRelicAgent_x64_2.0.8.4.msi" target="content\NewRelicAgent_x64_2.0.8.4.msi" />
+    <file src="content\web.config.transform" target="content\web.config.transform" />
     <file src="tools\install.ps1" target="tools\install.ps1" />
+    <file src="tools\uninstall.ps1" target="tools\uninstall.ps1" />
   </files>
 </package>
