@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <version>1.0.0.3</version>
+    <version>1.0.0.9</version>
     <authors>Mike Cousins</authors>
     <owners />
     <licenseUrl>http://newrelic.com</licenseUrl>
@@ -25,8 +25,10 @@ https://support.newrelic.com/help/kb/dotnet/installing-the-net-agent-on-azure</d
     <summary>Includes the latest New Relic x64 installer, so that you can easily include New Relic in your Azure deployment.</summary>
   </metadata>
   <files>
+    <file src="content\newrelic.cmd" target="content\newrelic.cmd" />
     <file src="content\NewRelicAgent_x64_2.0.8.4.msi" target="content\NewRelicAgent_x64_2.0.8.4.msi" />
-    <file src="content\startup.cmd" target="content\startup.cmd" />
+    <file src="content\web.config.transform" target="content\web.config.transform" />
     <file src="tools\install.ps1" target="tools\install.ps1" />
+    <file src="tools\uninstall.ps1" target="tools\uninstall.ps1" />
   </files>
 </package>
