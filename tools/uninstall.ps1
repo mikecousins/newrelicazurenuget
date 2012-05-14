@@ -1,8 +1,8 @@
 param($installPath, $toolsPath, $package, $project)
 
-$filepath = $project.ProjectName + '.Azure\ServiceDefinition.csdef'
-$ServiceDefinitionConfig = $installPath.Replace("packages\NewRelicWindowsAzure.1.0.0.4", $filepath)
- 
+#Modify the service config - removing the Startup task to run the newrelic.cmd
+$svcConfigFile = $DTE.Solution.Projects|Select-Object -Expand ProjectItems|Where-Object{$_.Name -eq 'ServiceDefinition.csdef'}
+$ServiceDefinitionConfig = $svcConfigFile.Properties.Item("FullPath").Value
 [xml] $xml = gc $ServiceDefinitionConfig
 
 $startupnode = $xml.ServiceDefinition.WebRole.Startup
