@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <version>1.0.0.9</version>
+    <version>1.0.0.10</version>
     <authors>Mike Cousins</authors>
     <owners />
     <licenseUrl>http://newrelic.com</licenseUrl>
@@ -18,8 +18,7 @@ The package is available through your NuGet package manager and on the web at ht
 
 Set up:
 1. install-package NewRelicWindowsAzure
-2. Open the newrelic.cmd file in your projects root and replace the text "REPLACE_WITH_LICENSE_KEY" with your license key.
-3. Modify the web.config key "NewRelic.AppName" to use whatever custom name you want and deploy your application.
+2. The Package installer will prompt you for your NewRelic.AppName and your New Relic license key
 
 Visit http://rpm.newrelic.com after your package deploy is complete to see your performance metrics.
 
@@ -29,8 +28,8 @@ For more information on what this package is doing go to: https://support.newrel
   <files>
     <file src="content\newrelic.cmd" target="content\newrelic.cmd" />
     <file src="content\NewRelicAgent_x64_2.0.8.4.msi" target="content\NewRelicAgent_x64_2.0.8.4.msi" />
-    <file src="content\web.config.transform" target="content\web.config.transform" />
     <file src="tools\install.ps1" target="tools\install.ps1" />
+    <file src="tools\NewRelicHelper.psm1" target="tools\NewRelicHelper.psm1" />
     <file src="tools\uninstall.ps1" target="tools\uninstall.ps1" />
   </files>
 </package>

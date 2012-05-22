@@ -1,6 +1,0 @@
-﻿<?xml version="1.0"?>
-<configuration>
-  <appSettings>
-    <add key="NewRelic.AppName" value="My Azure App"/>
-  </appSettings>
-</configuration>
