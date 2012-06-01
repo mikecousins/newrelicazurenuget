@@ -70,7 +70,7 @@ function update_newrelic_project_items([System.__ComObject] $project, [System.St
 }
 
 #Modify the service config - adding a new Startup task to run the newrelic.cmd
-function update_azure_service_config(){
+function update_azure_service_config([System.__ComObject] $project){
 	$svcConfigFile = $DTE.Solution.Projects|Select-Object -Expand ProjectItems|Where-Object{$_.Name -eq 'ServiceDefinition.csdef'}
 	$ServiceDefinitionConfig = $svcConfigFile.Properties.Item("FullPath").Value
 	[xml] $xml = gc $ServiceDefinitionConfig
@@ -83,20 +83,26 @@ function update_azure_service_config(){
 	$newRelicTaskNode.SetAttribute('taskType','simple')
 	$startupNode.AppendChild($newRelicTaskNode)
 
-	$modified = $xml.ServiceDefinition.WebRole.StartUp
-	if($modified -eq $null){
-		$modified = $xml.ServiceDefinition.WebRole
+	foreach($i in $xml.ServiceDefinition.ChildNodes){
+		if($i.name -eq $project.Name.ToString()){
+			$modified = $i
+			break
+		}
+	}
+
+	$modifiedStartUp = $modified.StartUp
+	if($modifiedStartUp -eq $null){
 		$modified.PrependChild($startupNode)
 	}
 	else{
 		$nodeExists = $false
-		foreach ($i in $xml.ServiceDefinition.WebRole.Startup.Task){
+		foreach ($i in $modifiedStartUp.Task){
 	   		if ($i.commandLine -eq "newrelic.cmd"){
 				$nodeExists = $true
 			}
 		}
 		if($NewRelicTask -eq $null -and !$nodeExists){
-			$modified.AppendChild($newRelicTaskNode)
+			$modifiedStartUp.AppendChild($newRelicTaskNode)
 		}
 	}
 	$xml.Save($ServiceDefinitionConfig);
@@ -122,24 +128,84 @@ function set_newrelic_appname_config_node([System.Xml.XmlElement]$node, [System.
 
 #Modify the [web|app].config so that we can use the project name instead of a static placeholder
 function update_project_config([System.__ComObject] $project){
-	$config = $project.ProjectItems.Item("Web.Config")
+	Try{
+		$config = $project.ProjectItems.Item("Web.Config") #$DTE.Solution.FindProjectItem("Web.Config") #
+	}Catch{
+		#Swallow - non webrole project 
+	}
+	if($config -eq $null){
+		$config = $project.ProjectItems.Item("App.Config")
+	}
 	$configPath = $config.Properties.Item("LocalPath").Value
 	[xml] $configXml = gc $configPath
 
 	if($configXml -ne $null){
-		$newRelicAppSetting = $configXml.configuration.appSettings.SelectSingleNode("//add[@key = 'NewRelic.AppName']")
+		$newRelicAppSetting = $null
+		if(!$configXml.configuration.appSettings.IsEmpty -and $configXml.configuration.appSettings.HasChildNodes){
+			$newRelicAppSetting = $configXml.configuration.appSettings.SelectSingleNode("//add[@key = 'NewRelic.AppName']")
+		}
+
 		if($newRelicAppSetting -ne $null){
 			set_newrelic_appname_config_node $newRelicAppSetting $project.Name.ToString()
 		}
 		else{
 			#add the node
-			$settingNode = $configXml.configuration.appSettings
 			$addSettingNode = $configXml.CreateElement('add')
 			$addSettingNode.SetAttribute('key','NewRelic.AppName')
 			set_newrelic_appname_config_node $addSettingNode $project.Name.ToString()
-			$settingNode.AppendChild($addSettingNode)
+			$configXml.configuration["appSettings"].appendchild($addSettingNode)
 		}
 		
 		$configXml.Save($configPath);
+	}
+}
+
+#Modify the service config - removing the Startup task to run the newrelic.cmd
+function cleanup_azure_service_config([System.__ComObject] $project){
+	$svcConfigFile = $DTE.Solution.Projects|Select-Object -Expand ProjectItems|Where-Object{$_.Name -eq 'ServiceDefinition.csdef'}
+	$ServiceDefinitionConfig = $svcConfigFile.Properties.Item("FullPath").Value
+	[xml] $xml = gc $ServiceDefinitionConfig
+
+
+	foreach($i in $xml.ServiceDefinition.ChildNodes){
+		if($i.name -eq $project.Name.ToString()){
+			$modified = $i
+			break
+		}
+	}
+
+	$startupnode = $modified.Startup
+	if($startupnode.ChildNodes.Count -gt 0){
+		$node = $startupnode.Task | where { $_.commandLine -eq "newrelic.cmd" }
+		if($node -ne $null){
+			[Void]$node.ParentNode.RemoveChild($node)
+			if($startupnode.ChildNodes.Count -eq 0){
+				[Void]$startupnode.ParentNode.RemoveChild($startupnode)
+			}
+			$xml.Save($ServiceDefinitionConfig)
+		}
+	}
+
+}
+
+#Remove all newrelic info from the [web|app].config
+function cleanup_project_config([System.__ComObject] $project){
+	Try{
+		$config = $project.ProjectItems.Item("Web.Config")
+	}Catch{
+		#Swallow - non webrole project 
+	}
+	if($config -eq $null){
+		$config = $DTE.Solution.FindProjectItem("App.Config")
+	}
+	$configPath = $config.Properties.Item("LocalPath").Value
+	[xml] $configXml = gc $configPath
+
+	if($configXml -ne $null){	
+		$newRelicAppSetting = $configXml.configuration.appSettings.SelectSingleNode("//add[@key = 'NewRelic.AppName']")
+		if($newRelicAppSetting -ne $null){
+			[Void]$newRelicAppSetting.ParentNode.RemoveChild($newRelicAppSetting)
+			$configXml.Save($configPath)
+		}
 	}
 }
