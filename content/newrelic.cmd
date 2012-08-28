@@ -1,5 +1,5 @@
 REM Update this variable to the current installer name.
-SET NR_INSTALLER_NAME=NewRelicAgent_x64_2.0.9.15.msi
+SET NR_INSTALLER_NAME=NewRelicAgent_x64_2.0.11.1.msi
 
 REM Update with your license key
 SET LICENSE_KEY=REPLACE_WITH_LICENSE_KEY

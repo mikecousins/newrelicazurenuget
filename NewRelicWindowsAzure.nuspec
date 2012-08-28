@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <version>1.0.0.10</version>
+    <version>1.0.0.18</version>
     <authors>Mike Cousins,Nick Floyd</authors>
     <owners />
     <licenseUrl>http://newrelic.com</licenseUrl>
@@ -27,7 +27,7 @@ For more information on what this package is doing go to: https://support.newrel
   </metadata>
   <files>
     <file src="content\newrelic.cmd" target="content\newrelic.cmd" />
-    <file src="content\NewRelicAgent_x64_2.0.9.15.msi" target="content\NewRelicAgent_x64_2.0.9.15.msi" />
+    <file src="content\NewRelicAgent_x64_2.0.11.1.msi" target="content\NewRelicAgent_x64_2.0.11.1.msi" />
     <file src="lib\net20\NewRelic.Api.Agent.dll" target="lib\net20\NewRelic.Api.Agent.dll" />
     <file src="tools\install.ps1" target="tools\install.ps1" />
     <file src="tools\NewRelicHelper.psm1" target="tools\NewRelicHelper.psm1" />
