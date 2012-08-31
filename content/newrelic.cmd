@@ -22,6 +22,9 @@ REM copy /Y newrelic.xml %NR_HOME% >> d:\nr.log
 REM Uncomment the line below to copy custom instrumentation into the agent directory.
 REM copy /y CustomInstrumentation.xml %NR_HOME%\extensions >> d:\nr.log
 
+REM Uncomment the line below to get instrumentation for worker roles and / or not IIS based .net applications
+REM SET COR_ENABLE_PROFILING = 1
+
 REM Restart the instance.  The worker process will be instrumented the next time it starts.
 SHUTDOWN /r /c "Reboot after installing the New Relic .NET Agent" /t 0
 
