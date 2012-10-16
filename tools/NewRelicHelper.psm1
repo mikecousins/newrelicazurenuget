@@ -72,40 +72,45 @@ function update_newrelic_project_items([System.__ComObject] $project, [System.St
 #Modify the service config - adding a new Startup task to run the newrelic.cmd
 function update_azure_service_config([System.__ComObject] $project){
 	$svcConfigFile = $DTE.Solution.Projects|Select-Object -Expand ProjectItems|Where-Object{$_.Name -eq 'ServiceDefinition.csdef'}
-	$ServiceDefinitionConfig = $svcConfigFile.Properties.Item("FullPath").Value
-	[xml] $xml = gc $ServiceDefinitionConfig
-
-	#Create startup and newrelic task nodes
-	$startupNode = $xml.CreateElement('Startup','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
-	$newRelicTaskNode = $xml.CreateElement('Task','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
-	$newRelicTaskNode.SetAttribute('commandLine','newrelic.cmd')
-	$newRelicTaskNode.SetAttribute('executionContext','elevated')
-	$newRelicTaskNode.SetAttribute('taskType','simple')
-	$startupNode.AppendChild($newRelicTaskNode)
-
-	foreach($i in $xml.ServiceDefinition.ChildNodes){
-		if($i.name -eq $project.Name.ToString()){
-			$modified = $i
-			break
-		}
-	}
-
-	$modifiedStartUp = $modified.StartUp
-	if($modifiedStartUp -eq $null){
-		$modified.PrependChild($startupNode)
+	if($svcConfigFile -ne $null){
+    	$ServiceDefinitionConfig = $svcConfigFile.Properties.Item("FullPath").Value
+    	[xml] $xml = gc $ServiceDefinitionConfig
+    
+    	#Create startup and newrelic task nodes
+    	$startupNode = $xml.CreateElement('Startup','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
+    	$newRelicTaskNode = $xml.CreateElement('Task','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
+    	$newRelicTaskNode.SetAttribute('commandLine','newrelic.cmd')
+    	$newRelicTaskNode.SetAttribute('executionContext','elevated')
+    	$newRelicTaskNode.SetAttribute('taskType','simple')
+    	$startupNode.AppendChild($newRelicTaskNode)
+    
+    	foreach($i in $xml.ServiceDefinition.ChildNodes){
+    		if($i.name -eq $project.Name.ToString()){
+    			$modified = $i
+    			break
+    		}
+    	}
+    
+    	$modifiedStartUp = $modified.StartUp
+    	if($modifiedStartUp -eq $null){
+    		$modified.PrependChild($startupNode)
+    	}
+    	else{
+    		$nodeExists = $false
+    		foreach ($i in $modifiedStartUp.Task){
+    	   		if ($i.commandLine -eq "newrelic.cmd"){
+    				$nodeExists = $true
+    			}
+    		}
+    		if($NewRelicTask -eq $null -and !$nodeExists){
+    			$modifiedStartUp.AppendChild($newRelicTaskNode)
+    		}
+    	}
+    	$xml.Save($ServiceDefinitionConfig);
 	}
 	else{
-		$nodeExists = $false
-		foreach ($i in $modifiedStartUp.Task){
-	   		if ($i.commandLine -eq "newrelic.cmd"){
-				$nodeExists = $true
-			}
-		}
-		if($NewRelicTask -eq $null -and !$nodeExists){
-			$modifiedStartUp.AppendChild($newRelicTaskNode)
-		}
+	   Write-Host "Unable to find the ServiceDefinition.csdef file in your solution, please make sure your solution contains an Azure deployment project and try again."
 	}
-	$xml.Save($ServiceDefinitionConfig);
 }
 
 # Depending on how many worker roles / web roles there are in this project 
@@ -163,27 +168,29 @@ function update_project_config([System.__ComObject] $project){
 #Modify the service config - removing the Startup task to run the newrelic.cmd
 function cleanup_azure_service_config([System.__ComObject] $project){
 	$svcConfigFile = $DTE.Solution.Projects|Select-Object -Expand ProjectItems|Where-Object{$_.Name -eq 'ServiceDefinition.csdef'}
-	$ServiceDefinitionConfig = $svcConfigFile.Properties.Item("FullPath").Value
-	[xml] $xml = gc $ServiceDefinitionConfig
-
-
-	foreach($i in $xml.ServiceDefinition.ChildNodes){
-		if($i.name -eq $project.Name.ToString()){
-			$modified = $i
-			break
-		}
-	}
-
-	$startupnode = $modified.Startup
-	if($startupnode.ChildNodes.Count -gt 0){
-		$node = $startupnode.Task | where { $_.commandLine -eq "newrelic.cmd" }
-		if($node -ne $null){
-			[Void]$node.ParentNode.RemoveChild($node)
-			if($startupnode.ChildNodes.Count -eq 0){
-				[Void]$startupnode.ParentNode.RemoveChild($startupnode)
-			}
-			$xml.Save($ServiceDefinitionConfig)
-		}
+	if($svcConfigFile -ne $null){
+    	$ServiceDefinitionConfig = $svcConfigFile.Properties.Item("FullPath").Value
+    	[xml] $xml = gc $ServiceDefinitionConfig
+    
+    
+    	foreach($i in $xml.ServiceDefinition.ChildNodes){
+    		if($i.name -eq $project.Name.ToString()){
+    			$modified = $i
+    			break
+    		}
+    	}
+    
+    	$startupnode = $modified.Startup
+    	if($startupnode.ChildNodes.Count -gt 0){
+    		$node = $startupnode.Task | where { $_.commandLine -eq "newrelic.cmd" }
+    		if($node -ne $null){
+    			[Void]$node.ParentNode.RemoveChild($node)
+    			if($startupnode.ChildNodes.Count -eq 0){
+    				[Void]$startupnode.ParentNode.RemoveChild($startupnode)
+    			}
+    			$xml.Save($ServiceDefinitionConfig)
+    		}
+    	}
 	}
 
 }
