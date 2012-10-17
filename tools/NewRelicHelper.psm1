@@ -158,7 +158,14 @@ function update_project_config([System.__ComObject] $project){
 			$addSettingNode = $configXml.CreateElement('add')
 			$addSettingNode.SetAttribute('key','NewRelic.AppName')
 			set_newrelic_appname_config_node $addSettingNode $project.Name.ToString()
-			$configXml.configuration["appSettings"].appendchild($addSettingNode)
+
+			if (!$configXml.configuration.appSettings) 
+			{
+			    $appSettingsNode = $configXml.CreateElement("appSettings")
+			    $configXml.configuration.AppendChild($appSettingsNode)
+			}
+
+			$configXml.configuration.SelectSingleNode("appSettings").AppendChild($addSettingNode)
 		}
 		
 		$configXml.Save($configPath);
