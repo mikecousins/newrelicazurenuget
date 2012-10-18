@@ -57,7 +57,7 @@ function update_newrelic_project_items([System.__ComObject] $project, [System.St
 	$copyToOutputCmd.Value = 1
 	
 	#Modify NewRelic.cmd to accept the user's license key input 
-	$licenseKey = create_dialog "License Key" "Please enter in your New Relic license key (optional)"
+	$licenseKey = create_dialog "License Key" "Please enter in your New Relic LICENSE KEY"
 
 	if($licenseKey.Length -gt 0){
 		$newrelicCmdFile = $newrelicCmd.Properties.Item("FullPath").Value
@@ -65,7 +65,7 @@ function update_newrelic_project_items([System.__ComObject] $project, [System.St
 		Set-Content -Value $fileContent -Path $newrelicCmdFile
 	}
 	else{
-		Write-Host "No Key was provided, please make sure to edit the newrelic.cmd file and add a valid New Relic license key"
+		Write-Host "No Key was provided, please make sure to edit the newrelic.cmd file and add a valid New Relic LICENSE KEY"
 	}	
 }
 
@@ -117,7 +117,7 @@ function update_azure_service_config([System.__ComObject] $project){
 # we will use this value for the config key NewRelic.AppName
 # Prompt use to enter a name then >> Solution name >> more than one role we will attempt to use worker role name
 function set_newrelic_appname_config_node([System.Xml.XmlElement]$node, [System.String]$pn){
-	$appName = create_dialog "NewRelic.AppName Key" "Please enter in the value you would like for the NewRelic.AppName AppSetting for the project named $pn (optional, if none is provided we will use the solution name)"
+	$appName = create_dialog "NewRelic.AppName" "Please enter in the value you would like for the NewRelic.AppName AppSetting for the project named $pn (optional, if none is provided we will use the solution name)"
 	if($node -ne $null){
 		if($appName.Length -gt 0){
 			$node.SetAttribute('value',$appName)
