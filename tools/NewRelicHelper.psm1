@@ -25,7 +25,7 @@ function create_dialog([System.String]$title, [System.String]$msg){
 	$CancelButton.Location = New-Object System.Drawing.Size(150,120)
 	$CancelButton.Size = New-Object System.Drawing.Size(75,23)
 	$CancelButton.Text = "Cancel"
-	$CancelButton.Add_Click({$objForm.Close()})
+	$CancelButton.Add_Click({$script:x=$null;$objForm.Close()})
 	$objForm.Controls.Add($CancelButton)
 
 	$objLabel = New-Object System.Windows.Forms.Label
