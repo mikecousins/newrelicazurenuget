@@ -10,15 +10,15 @@ function create_dialog([System.String]$title, [System.String]$msg){
 
 	$objForm.KeyPreview = $True
 	$objForm.Add_KeyDown({if ($_.KeyCode -eq "Enter") 
-	    {$x=$objTextBox.Text;$objForm.Close()}})
+	    {$script:x=$objTextBox.Text;$objForm.Close()}})
 	$objForm.Add_KeyDown({if ($_.KeyCode -eq "Escape") 
-	    {$objForm.Close()}})
+	    {$script:x=$null;$objForm.Close()}})
 
 	$OKButton = New-Object System.Windows.Forms.Button
 	$OKButton.Location = New-Object System.Drawing.Size(75,120)
 	$OKButton.Size = New-Object System.Drawing.Size(75,23)
 	$OKButton.Text = "OK"
-	$OKButton.Add_Click({$x=$objTextBox.Text;$objForm.Close()})
+	$OKButton.Add_Click({$script:x=$objTextBox.Text;$objForm.Close()})
 	$objForm.Controls.Add($OKButton)
 
 	$CancelButton = New-Object System.Windows.Forms.Button
@@ -57,15 +57,15 @@ function update_newrelic_project_items([System.__ComObject] $project, [System.St
 	$copyToOutputCmd.Value = 1
 	
 	#Modify NewRelic.cmd to accept the user's license key input 
-	$licenseKey = create_dialog "License Key" "Please enter in your New Relic license key (optional)"
+	$licenseKey = create_dialog "License Key" "Please enter in your New Relic LICENSE KEY"
 
-	if($licenseKey.Length -gt 0){
+	if($licenseKey -ne $null -and $licenseKey.Length -gt 0){
 		$newrelicCmdFile = $newrelicCmd.Properties.Item("FullPath").Value
 		$fileContent =  Get-Content $newrelicCmdFile | Foreach-Object {$_ -replace 'REPLACE_WITH_LICENSE_KEY', $licenseKey}
 		Set-Content -Value $fileContent -Path $newrelicCmdFile
 	}
 	else{
-		Write-Host "No Key was provided, please make sure to edit the newrelic.cmd file and add a valid New Relic license key"
+		Write-Host "No Key was provided, please make sure to edit the newrelic.cmd file and add a valid New Relic LICENSE KEY"
 	}	
 }
 
@@ -117,9 +117,9 @@ function update_azure_service_config([System.__ComObject] $project){
 # we will use this value for the config key NewRelic.AppName
 # Prompt use to enter a name then >> Solution name >> more than one role we will attempt to use worker role name
 function set_newrelic_appname_config_node([System.Xml.XmlElement]$node, [System.String]$pn){
-	$appName = create_dialog "NewRelic.AppName Key" "Please enter in the value you would like for the NewRelic.AppName AppSetting for the project named $pn (optional, if none is provided we will use the solution name)"
+	$appName = create_dialog "NewRelic.AppName" "Please enter in the value you would like for the NewRelic.AppName AppSetting for the project named $pn (optional, if none is provided we will use the solution name)"
 	if($node -ne $null){
-		if($appName.Length -gt 0){
+		if($appName -ne $null -and $appName.Length -gt 0){
 			$node.SetAttribute('value',$appName)
 		}
 		else{
