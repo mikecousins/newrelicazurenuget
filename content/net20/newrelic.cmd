@@ -25,7 +25,8 @@ REM copy /y CustomInstrumentation.xml %NR_HOME%\extensions >> d:\nr.log
 REM Uncomment the line below to get instrumentation for worker roles and / or not IIS based .net applications
 REM SET COR_ENABLE_PROFILING = 1
 
-REM Restart the instance.  The worker process will be instrumented the next time it starts.
+REM Restart the instance.  The worker process will be instrumented the next time it starts. if emulated then this step will not run
+if "%EMULATED%"=="true" goto :EOF
 SHUTDOWN /r /c "Reboot after installing the New Relic .NET Agent" /t 0
 
 GOTO END

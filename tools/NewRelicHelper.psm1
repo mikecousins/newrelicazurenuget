@@ -76,13 +76,26 @@ function update_azure_service_config([System.__ComObject] $project){
     	$ServiceDefinitionConfig = $svcConfigFile.Properties.Item("FullPath").Value
     	[xml] $xml = gc $ServiceDefinitionConfig
     
-    	#Create startup and newrelic task nodes
+		#Create startup and newrelic task nodes
     	$startupNode = $xml.CreateElement('Startup','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
-    	$newRelicTaskNode = $xml.CreateElement('Task','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
-    	$newRelicTaskNode.SetAttribute('commandLine','newrelic.cmd')
-    	$newRelicTaskNode.SetAttribute('executionContext','elevated')
-    	$newRelicTaskNode.SetAttribute('taskType','simple')
-    	$startupNode.AppendChild($newRelicTaskNode)
+    	$taskNode = $xml.CreateElement('Task','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
+    	$environmentNode = $xml.CreateElement('Environment','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
+		$variableNode = $xml.CreateElement('Variable','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
+		$roleInstanceValueNode = $xml.CreateElement('RoleInstanceValue','http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition')
+		
+		$roleInstanceValueNode.SetAttribute('xpath','/RoleEnvironment/Deployment/@emulated')
+		$variableNode.SetAttribute('name','EMULATED')
+		
+		$variableNode.AppendChild($roleInstanceValueNode)
+		$environmentNode.AppendChild($variableNode)
+		
+		
+		$taskNode.SetAttribute('commandLine','newrelic.cmd')
+    	$taskNode.SetAttribute('executionContext','elevated')
+    	$taskNode.SetAttribute('taskType','simple')
+    	$taskNode.AppendChild($environmentNode)
+		
+		$startupNode.AppendChild($taskNode)
     
     	foreach($i in $xml.ServiceDefinition.ChildNodes){
     		if($i.name -eq $project.Name.ToString()){
@@ -103,7 +116,7 @@ function update_azure_service_config([System.__ComObject] $project){
     			}
     		}
     		if($NewRelicTask -eq $null -and !$nodeExists){
-    			$modifiedStartUp.AppendChild($newRelicTaskNode)
+    			$modifiedStartUp.AppendChild($taskNode)
     		}
     	}
     	$xml.Save($ServiceDefinitionConfig);
