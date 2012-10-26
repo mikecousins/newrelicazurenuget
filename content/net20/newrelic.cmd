@@ -23,7 +23,7 @@ REM Uncomment the line below to copy custom instrumentation into the agent direc
 REM copy /y CustomInstrumentation.xml %NR_HOME%\extensions >> d:\nr.log
 
 REM Uncomment the line below to get instrumentation for worker roles and / or not IIS based .net applications
-REM SET COR_ENABLE_PROFILING = 1
+REM SETX COR_ENABLE_PROFILING 1 /M
 
 REM Restart the instance.  The worker process will be instrumented the next time it starts. if emulated then this step will not run
 if "%EMULATED%"=="true" goto :EOF
